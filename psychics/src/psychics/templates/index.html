@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru"> 
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <title>Битва экстрасенсов</title>
+    </head>
+    <body>
+        <main>
+            <div class="container py-5">
+                <p>История битвы</p>
+                <table>
+
+                    <thead>
+                        <tr>
+                                {% for participant in controller.participants %}
+                                    <td>{{ participant.name }}</td>
+                                {% endfor %}
+                                <td>Правильный ответ</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for round in controller.rounds %}
+                            <tr>
+                                {% for guess in round.guesses %}
+                                    <td>
+                                        {{ guess }}
+                                    </td>
+                                {% endfor %}
+
+                                <td>
+                                    {% if round.answer is not None %}
+                                        {{ round.answer }}
+                                    {% else %}
+                                        Нет
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                
+                </table>
+                
+                <p>Результат экстрасенсов</p>
+                <table>
+                    <thead>
+                        {% for participant in controller.participants %}
+                            <td>{{ participant.name }}</td>
+                        {% endfor %}
+                    </thead>
+
+                    <tbody>
+                        {% for participant in controller.participants %}
+                        <td>{{ participant.guessed }}</td>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if guessed %}
+                        <input type='submit' value='Загадать двухзначное число'>
+                    {% else %}
+                        <input type='number' name='answer'>
+                        <input type='submit' value='Ответить'>
+                    {% endif %}
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,2 @@
+SECRET_KEY=django-insecure-4f^)d+al6@+6ns%#on5k^6pr2rk9t=c=#2g-fe60qvum#p$gqt
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
