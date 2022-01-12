@@ -25,6 +25,6 @@ class OneValuePsychic(TwoDigitPsychic):
             self._value = value
         else:
             raise ValueError('value out of range')
-    
+
     def make_guess(self) -> int:
         return self._value

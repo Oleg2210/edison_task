@@ -18,19 +18,19 @@ class PsychicsView(View):
         controller = Controller.get_from_session(request)
         context = self.get_context(controller)
         return render(request, 'index.html', context=context)
-    
+
     @Controller.check_controller_exists
     def post(self, request: HttpRequest) -> HttpResponse:
         form = PsychicForm(request.POST)
         controller = Controller.get_from_session(request)
-        
+
         if form.is_valid():
             if form.cleaned_data['answer'] is not None:
                 controller.save_answer(form.cleaned_data['answer'])
             else:
                 controller.make_guess()
-        
+
         controller.save_to_session(request)
-        
+
         context = self.get_context(controller)
-        return render (request, 'index.html', context=context)
+        return render(request, 'index.html', context=context)
