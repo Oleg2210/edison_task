@@ -1,20 +1,21 @@
 import json
-
 from copy import deepcopy
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Iterable
+from django.http import HttpRequest
+
 from .participant import Participant
 from .psychic import OneValuePsychic, RandomPsychic
 from psychics.utils.utils import remove_prefixes
 
 
-def create_participants():
+def create_participants() -> List[Participant]:
     p1 = Participant(
         psychic_type=OneValuePsychic, 
         name='Экстрасенс 1', 
         value=77
     )
     p2 = Participant(psychic_type=RandomPsychic, name='Колдун 2')
-    return p1, p2
+    return [p1, p2]
 
 
 class Controller:
@@ -25,17 +26,17 @@ class Controller:
         self._rounds = rounds
     
     @property
-    def participants(self):
+    def participants(self) -> List[Participant]:
         return deepcopy(self._participants)
     
     @property
-    def rounds(self):
+    def rounds(self) -> dict:
         return deepcopy(self._rounds)
 
-    def toJson(self):
+    def toJson(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__)
 
-    def save_to_session(self, request):
+    def save_to_session(self, request: HttpRequest) -> str:
         request.session[self._SESSION_NAME] = json.dumps(
             self.toJson(), indent=4
         )
@@ -55,7 +56,7 @@ class Controller:
         return wrapper
     
     @classmethod
-    def get_from_session(cls, request):
+    def get_from_session(cls, request: HttpRequest) -> 'Controller':
         data = json.loads(json.loads(request.session[cls._SESSION_NAME]))
         data = remove_prefixes(data)
         
@@ -69,14 +70,14 @@ class Controller:
         controller = Controller(**data)
         return controller
 
-    def check_guess_answered(self):
+    def check_guess_answered(self) -> bool:
         if (not len(self._rounds) or (
             self._rounds[-1]['answer'] is not None)
         ):
             return True
         return False
 
-    def make_guess(self):
+    def make_guess(self) -> None:
         guesses = []
         for participant in self._participants:
             guesses.append(participant.make_guess())
@@ -91,7 +92,7 @@ class Controller:
         else:
             self._rounds[-1] = round
         
-    def save_answer(self, answer):
+    def save_answer(self, answer: Any) -> None:
         if self._rounds[-1]['answer'] is not None:
             raise RuntimeError('you must call make_guesses first')
 

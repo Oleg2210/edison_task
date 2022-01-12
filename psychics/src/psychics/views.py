@@ -7,7 +7,7 @@ from .forms import PsychicForm
 
 
 class PsychicsView(View):
-    def get_context(self, controller):
+    def get_context(self, controller: Controller):
         return {
             'controller': controller,
             'guessed': controller.check_guess_answered()

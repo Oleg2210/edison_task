@@ -1,4 +1,6 @@
 import json
+from typing import Any
+
 from .psychic import Psychic
 from psychics.components import psychic
 
@@ -41,5 +43,5 @@ class Participant:
         
         self._guessed_count = count
     
-    def make_guess(self):
+    def make_guess(self) -> Any:
         return self._psychic.make_guess()
